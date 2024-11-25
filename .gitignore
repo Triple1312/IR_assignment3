@@ -1,0 +1,6 @@
+src/data
+.idea
+src/MiniLM_ts/main_test.ts
+src/evaluations/php/predictions.csv
+src/evaluations/php/results.csv
+src/evaluations/php/predictions.csv

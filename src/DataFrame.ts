@@ -1,5 +1,4 @@
-
-
+import fs from 'node:fs';
 
 export default class DataFrame {
   _columnNames: string[] = [];
@@ -8,13 +7,16 @@ export default class DataFrame {
 
   private constructor() {}
 
-  static async fromCSV(path: string) : Promise<DataFrame> {
-    const text = await Deno.readTextFile(path);
+  static async fromCSV(path: string, seperator = ',') : Promise<DataFrame> {
+    const text = fs.readFileSync(path).toString();
     const text_lines = text.split("\n");
     let df : DataFrame = new DataFrame();
-    df._columnNames = text_lines[0].split(",");
+    df._columnNames = text_lines[0].split(seperator);
     for (let i = 1; i < text_lines.length; i++) {
-      df._data.push(text_lines[i].split(","));
+      if (text_lines[i].length == 0) {
+        continue;
+      }
+      df._data.push(text_lines[i].split(seperator));
     }
     return df;
   }
@@ -28,40 +30,4 @@ export default class DataFrame {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

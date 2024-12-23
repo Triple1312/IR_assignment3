@@ -58,16 +58,17 @@ class SystemEvaluator {
 
 
 $results_df = new DataFrame();
-$results_df->fromCSV("results.csv");
+$results_df->fromCSV("dev_query_results.csv");
 
 $predictions_df = new DataFrame();
-$predictions_df->fromCSV("predictions.csv");
+$predictions_df->fromCSV("predictions_large.csv");
 
 echo "loaded dataframes\n";
 
 $results = [];
 $predictions = [];
 
+// generate arrays of results for every query
 $current_id = $results_df->data[0][0];
 $results_tmp = [];
 for ($i = 0; $i < count($results_df->data); $i++) {
@@ -83,6 +84,7 @@ for ($i = 0; $i < count($results_df->data); $i++) {
     }
 }
 
+// generate arrays of predictions for every query
 $current_id = $predictions_df->data[0][0];
 $predictions_tmp = [];
 for ($i = 0; $i < count($predictions_df->data); $i++) {
@@ -97,6 +99,12 @@ for ($i = 0; $i < count($predictions_df->data); $i++) {
         array_push($predictions_tmp, $predictions_df->data[$i][1]);
     }
 }
+
+
+// make sure that the number of results and predictions is the same
+$min_length = min(count($results), count($predictions));
+$results = array_slice($results, 0, $min_length);
+$predictions = array_slice($predictions, 0, $min_length);
 
 echo "precision@1: " . SystemEvaluator::mean_average_precision($results, $predictions, 1) . "\n";
 echo "precision@3: " . SystemEvaluator::mean_average_precision($results, $predictions, 3) . "\n";
